@@ -1,0 +1,11 @@
+include README.md CHANGELOG.md CITATION.cff
+include Dockerfile .dockerignore .clang-format build_native.sh apt-full.lock requirements-full.lock
+recursive-include configs *.json
+recursive-include evaluation *.py *.md *.txt *.lock *.json LICENSE LICENSE-*
+recursive-include third_party_notices *
+recursive-include tests *.py *.cpp *.json
+recursive-include tools *.py *.txt
+prune slam_dunk/engine/native/build
+prune data
+prune results
+global-exclude *.py[cod]

@@ -1,0 +1,10 @@
+numpy==2.5.4
+scipy==1.18.1
+numba==0.68.0
+llvmlite==0.50.0
+opencv-contrib-python-headless==4.14.0.94
+pycolmap==4.2.1
+projectaria-tools==2.3.0
+psutil==7.2.2
+threadpoolctl==3.7.0
+gtsam==4.3.0

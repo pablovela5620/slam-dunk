@@ -1,0 +1,95 @@
+{
+  "date": "2026-11-13",
+  "previous_release_commit": "8d318a9",
+  "scope": "Coordinate and camera-index equivalence checks; no full-cohort benchmark rerun.",
+  "source_sha256": {
+    "slam_dunk/stereo.py": "57adc96bb8faab4e35d4a827e1e6c8895c4e668ce93c6715fe4a31e2c3e20c63",
+    "slam_dunk/backend.py": "d625ab839aedc35a0ed7924e2a3202956f0a50a3fa9635395c526bdb54c99840",
+    "slam_dunk/frontend.py": "f7911031de9951b4e003774a97fe43d91ff39015b7e0526bfb9a4bd646225388",
+    "slam_dunk/engine/fuse.py": "d58260a03e7ce3badebfa73b16576212667d28cbceeba5bc4e501ae6f32eed6f",
+    "slam_dunk/engine/nominal_rig.py": "8ed93d8b1b537d91b4c9c3c0452c04caeba76c65e211c0199424565e1df5dfd2",
+    "slam_dunk/engine/native/batch_joint.cpp": "21d65c5ab05e5b43ac0517ea92c7d21a72d3c596b023e9e63b69bb044a6a5cb3",
+    "slam_dunk/engine/native/recover_tracks.h": "ca1392f74203c63a4d31c94f73eea09200687a35b8bf62042dfd46f4c22f4ad1",
+    "slam_dunk/engine/native/estimator/stereo.hpp": "580a71b5792890cac66ebfe1a5bfa6c1a8c49f5e7b5c6f839611ed5b3ef7c152"
+  },
+  "native_binary_sha256": "e1637449d953ca8123105361a6af63e596c2987ed20ae9b090beacff06d96881",
+  "native_factor_checks": {
+    "cases": 40,
+    "max_projection_residual_difference_px": 0,
+    "max_relative_finite_difference_jacobian_error": 2.67121e-08,
+    "max_prior_difference": 2.21258e-13,
+    "body_axis_update_and_manifold_checks": "passed"
+  },
+  "sequence_3_17": {
+    "packet": {
+      "poses": 1495,
+      "points": 90656,
+      "observations": 415902,
+      "imu_samples": 1794618,
+      "unchanged_measurement_values": true
+    },
+    "dense_export": {
+      "samples": 35842,
+      "max_position_difference_m": 0.0,
+      "max_rotation_difference_rad": 0.0
+    },
+    "one_iteration": {
+      "max_position_difference_m": 9.99946792035189e-11,
+      "max_rotation_difference_rad": 1.8799266271524158e-12,
+      "max_camera_rotation_difference_rad": 2.0822202991740522e-10,
+      "max_camera_translation_difference_m": 8.974157564876161e-11,
+      "max_bias_difference": 1.000000082740371e-11,
+      "max_focal_difference_px": 1.0231815394945443e-12
+    }
+  },
+  "sequence_3_17_20_keyframe_crop": {
+    "temporal": {
+      "max_position_difference_m": 1.0000333894311098e-12,
+      "max_rotation_difference_rad": 2.00210011316127e-14,
+      "previous_events": [
+        "OUTLIERS removed 1 remain 700",
+        "RECOVERED 36 observations 0 points",
+        "FINAL_ADDED_OBSERVATIONS 36",
+        "FINAL_CALIBRATION_FROZEN pose_velocity_bias_landmark_refinement",
+        "FINAL_SELECTION refined reason=accepted_stable_cost_decrease"
+      ],
+      "stereo_events": [
+        "OUTLIERS removed 1 remain 700",
+        "RECOVERED 36 observations 0 points",
+        "FINAL_ADDED_OBSERVATIONS 36",
+        "FINAL_CALIBRATION_FROZEN pose_velocity_bias_landmark_refinement",
+        "FINAL_SELECTION refined reason=accepted_stable_cost_decrease"
+      ]
+    },
+    "static": {
+      "max_position_difference_m": 1.4141871840754095e-14,
+      "max_rotation_difference_rad": 0.0,
+      "previous_events": [
+        "OUTLIERS removed 1 remain 700",
+        "RECOVERED 35 observations 0 points",
+        "FINAL_ADDED_OBSERVATIONS 35",
+        "FINAL_CALIBRATION_FROZEN pose_velocity_bias_landmark_refinement",
+        "FINAL_SELECTION refined reason=accepted_stable_cost_decrease"
+      ],
+      "stereo_events": [
+        "OUTLIERS removed 1 remain 700",
+        "RECOVERED 35 observations 0 points",
+        "FINAL_ADDED_OBSERVATIONS 35",
+        "FINAL_CALIBRATION_FROZEN pose_velocity_bias_landmark_refinement",
+        "FINAL_SELECTION refined reason=accepted_stable_cost_decrease"
+      ]
+    }
+  },
+  "backend_api_smoke": {
+    "status": "complete",
+    "expected_frames": 35842,
+    "output_frames": 35842,
+    "exact_grid": true,
+    "finite": true,
+    "inputs_unchanged": true
+  },
+  "python_unit_tests": {
+    "run": 10,
+    "passed": 10
+  }
+}

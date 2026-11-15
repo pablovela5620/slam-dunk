@@ -1,0 +1,8 @@
+{
+  "temporal_camera": true,
+  "gyro_response": true,
+  "accelerometer": false,
+  "clock": false,
+  "thermal": false,
+  "final_refinement": true
+}

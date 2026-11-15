@@ -1,0 +1,19 @@
+name: Tests
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create test environment
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install numpy==2.5.4
+      - name: Run configuration and trajectory checks
+        run: .venv/bin/python -m unittest discover -s tests -v
+      - name: Compile Python sources
+        run: .venv/bin/python -m compileall -q slam_dunk evaluation tools
+      - name: Check sensor extraction CLI
+        run: .venv/bin/python tools/extract_recording.py --help

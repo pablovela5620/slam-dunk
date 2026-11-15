@@ -1,0 +1,2 @@
+# Preserve upstream source and license text across checkouts.
+* -text

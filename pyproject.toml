@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slam-dunk"
+version = "0.1.0"
+readme = "README.md"
+authors = [{name = "Jacob Van Meter"}, {name = "Ayush Paul"}]
+license = "AGPL-3.0-only"
+license-files = ["LICENSE", "third_party_notices/*.txt", "slam_dunk/engine/native/LICENSE-*"]
+description = "Offline visual-inertial refinement with time-varying camera and gyroscope calibration"
+requires-python = ">=3.12"
+dynamic = ["dependencies"]
+
+[project.scripts]
+slam-dunk = "slam_dunk.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["slam_dunk*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+slam_dunk = ["native_defaults.json", "engine/**/*", "engine/settings.json"]
+
+[tool.setuptools.exclude-package-data]
+slam_dunk = ["**/__pycache__/*", "**/native/build/*"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements-full.lock"]}
