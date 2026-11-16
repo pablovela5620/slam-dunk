@@ -10,3 +10,4 @@ slam_dunk/engine/native/build/
 data/
 results/
 .DS_Store
+.pixi/

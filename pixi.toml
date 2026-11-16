@@ -1,0 +1,119 @@
+[workspace]
+name = "slam-dunk"
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+description = "SLAM Dunk: offline VI refinement with time-varying camera and gyroscope calibration (pixi build)"
+
+# Thread caps match the paper's Docker run (Dockerfile ENV). slam_dunk/runtime.py
+# re-applies them for every stage subprocess.
+[activation.env]
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+NUMBA_NUM_THREADS = "1"
+PYTHONDONTWRITEBYTECODE = "1"
+PYTHONUNBUFFERED = "1"
+
+# ---------------------------------------------------------------- default (inference)
+[dependencies]
+python = "3.12.*"
+numpy = "==2.5.4"
+scipy = "==1.18.1"
+numba = "0.68.*"
+llvmlite = "0.50.*"
+py-opencv = "4.*"
+pycolmap = "==4.2.1"
+gtsam = "==4.3.0"
+psutil = "==7.2.2"
+threadpoolctl = "3.7.*"
+
+[pypi-dependencies]
+# conda-forge has no projectaria-tools build
+projectaria-tools = "==2.3.0"
+
+[tasks]
+check-imports = "python -c 'import numpy,scipy,numba,cv2,pycolmap,psutil,threadpoolctl,gtsam; from projectaria_tools.core import calibration; print(numpy.__version__, cv2.__version__, pycolmap.__version__)'"
+test = "python -m unittest discover -s tests -v"
+slam-dunk = { cmd = "python -m slam_dunk", depends-on = [{ task = "build-native", environment = "native" }] }
+# Reproduction (see REPRO.md). Paths: DATA_ROOT, RUNS_ROOT (repro/env.sh).
+download-cp-cohort = "bash repro/download_cp_cohort.sh"
+repro-seq = { cmd = "bash repro/run_seq.sh", depends-on = [{ task = "build-native", environment = "native" }] }
+repro-cohort = { cmd = "bash repro/run_cohort.sh", depends-on = [{ task = "build-native", environment = "native" }] }
+repro-table = "python repro/repro_table.py"
+
+
+# ---------------------------------------------------------------- native (C++ build toolchain, apt-full.lock)
+# Separate from default: conda-forge pycolmap 4.2.1 requires Eigen 5.0.1, while the
+# Basalt-derived frontend and batch_joint were built against Eigen 3.4.0 (apt lock).
+# The binaries carry an RPATH into this environment's lib/.
+[feature.native.dependencies]
+cxx-compiler = "*"
+gxx = "13.*"
+cmake = "3.28.*"
+ninja = "*"
+eigen = "3.4.*"
+tbb-devel = "2021.*"
+fmt = "*"
+libopencv = "4.*"
+ceres-solver = "2.2.*"
+glog = "*"
+
+[feature.native.tasks]
+build-native = { cmd = "bash repro/build_native_pixi.sh", inputs = ["slam_dunk/engine/native/**/*.cpp", "slam_dunk/engine/native/**/*.h", "slam_dunk/engine/native/CMakeLists.txt", "repro/build_native_pixi.sh"], outputs = ["slam_dunk/engine/native/build/aria_vio", "slam_dunk/engine/native/build/batch_joint", "slam_dunk/engine/native/build/libtrack_union.so"] }
+
+# ---------------------------------------------------------------- extract (VRS → prepared)
+[feature.extract.dependencies]
+python = "3.12.*"
+numpy = "==2.5.4"
+
+[feature.extract.pypi-dependencies]
+# tools/requirements.txt; neither is on conda-forge as a Python package
+projectaria-tools = "==2.3.0"
+vrs = "==1.2.2"
+
+[feature.extract.tasks]
+extract = "python tools/extract_recording.py"
+
+# ---------------------------------------------------------------- metrics (Evo wrapper)
+[feature.metrics.dependencies]
+python = "3.12.*"
+numpy = "==2.5.4"
+scipy = "==1.18.1"
+evo = "==1.38.1"
+
+[feature.metrics.tasks]
+score = "python evaluation/score_lamaria.py"
+
+# ---------------------------------------------------------------- cp-eval (official LaMAria evaluator)
+[feature.cp-eval.dependencies]
+python = "3.12.*"
+numpy = "==2.5.4"
+scipy = "==1.18.1"
+tqdm = "*"
+
+[feature.cp-eval.pypi-dependencies]
+# LaMAria's pycolmap 3.13.0.dev0 build exists only as this wheel; pyceres must come
+# from PyPI too so its pybind11 types match the wheel's bundled Ceres.
+pycolmap = { url = "https://cvg-data.inf.ethz.ch/lamaria/packages/pycolmap/pycolmap-3.13.0.dev0-cp312-cp312-manylinux_2_28_x86_64.whl" }
+pyceres = "==2.6"
+projectaria-tools = "==2.3.0"
+evo = "==1.31.1"
+
+# ---------------------------------------------------------------- viz (Rerun logging of real intermediates for the deep page)
+[feature.viz.dependencies]
+python = "3.12.*"
+numpy = "==2.5.4"
+scipy = "==1.18.1"
+rerun-sdk = "0.42.*"
+pillow = "*"
+ffmpeg = "*"
+
+[feature.viz.tasks]
+log-rerun = "python repro/log_rerun.py"
+
+[environments]
+viz = { features = ["viz"], no-default-feature = true }
+native = { features = ["native"], no-default-feature = true }
+extract = { features = ["extract"], no-default-feature = true }
+metrics = { features = ["metrics"], no-default-feature = true }
+cp-eval = { features = ["cp-eval"], no-default-feature = true }
